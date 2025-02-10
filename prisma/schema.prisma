@@ -1,0 +1,17 @@
+// prisma does not get env data directly from .env file.
+// You need to set the DATABASE_URL env variable in your terminal before running prisma commands.
+datasource db {
+  provider = "postgresql" // or "mysql" or "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+  age   Int
+}
