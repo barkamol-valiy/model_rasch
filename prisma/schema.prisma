@@ -1,17 +1,34 @@
-// prisma does not get env data directly from .env file.
-// You need to set the DATABASE_URL env variable in your terminal before running prisma commands.
-datasource db {
-  provider = "postgresql" // or "mysql" or "sqlite"
-  url      = env("DATABASE_URL")
-}
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
-  age   Int
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model student {
+  id            String   @id @default(cuid())
+  name          String
+  c_count       Int
+  w_count       Int
+  ability_logit Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model question {
+  id         String   @id @default(cuid())
+  name       String
+  diff_logit Float
+  c_count    Int
+  w_count    Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
