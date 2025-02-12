@@ -1,4 +1,5 @@
 const TelegramBot = require("node-telegram-bot-api");
+const msgHandler = require("./handlers/msgHandler");
 require("dotenv").config();
 
 // replace the value below with the Telegram token you receive from @BotFather
@@ -10,16 +11,10 @@ if (!token) {
   );
   process.exit(1);
 }
-// Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, { polling: true });
 
-bot.on("message", (msg) => {
-  const chatId = msg.chat.id;
-  console.log("Received message:", msg.text);
-
-  // Echo the received message back to the sender
-  bot.sendMessage(chatId, `You said: ${msg.text}`);
-});
+bot.on("message", msgHandler.MessageHandler(bot));
+bot.on("document", msgHandler.DocumentHandler(bot));
 
 console.log("Bot is running...");
 
