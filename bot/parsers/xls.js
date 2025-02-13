@@ -23,18 +23,23 @@ const handleXLS = async (bot, chatId, fileId, fileName) => {
       const sheet = workbook.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-      console.log("Raw Data:", data);
-
       const headers = data[0];
       const matrix = data.slice(1);
 
       // Compute ability logits
+      // Compute ability logits
       const abilityLogits = matrix.map((row) => {
         const answers = row.slice(1);
         const correctCount = answers.reduce((sum, val) => sum + val, 0);
-        return correctCount > 0
-          ? Math.log(correctCount / (answers.length - correctCount))
-          : NaN;
+        const incorrectCount = answers.length - correctCount;
+
+        if (correctCount === 0) {
+          return -Infinity; // Very low ability
+        } else if (incorrectCount === 0) {
+          return Infinity; // Very high ability
+        } else {
+          return Math.log(correctCount / incorrectCount);
+        }
       });
 
       // Compute difficulty logits
@@ -43,9 +48,15 @@ const handleXLS = async (bot, chatId, fileId, fileName) => {
           (sum, row) => sum + row[colIdx + 1],
           0
         );
-        return correctCount > 0
-          ? Math.log(correctCount / (matrix.length - correctCount))
-          : NaN;
+        const incorrectCount = matrix.length - correctCount;
+
+        if (correctCount === 0) {
+          return Infinity; // Extremely hard question
+        } else if (incorrectCount === 0) {
+          return -Infinity; // Extremely easy question
+        } else {
+          return Math.log(correctCount / incorrectCount);
+        }
       });
 
       console.log("Ability Logits:", abilityLogits);
