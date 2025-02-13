@@ -27,19 +27,26 @@ const handleXLS = async (bot, chatId, fileId, fileName) => {
       const matrix = data.slice(1);
 
       // Compute ability logits
-      // Compute ability logits
       const abilityLogits = matrix.map((row) => {
         const answers = row.slice(1);
         const correctCount = answers.reduce((sum, val) => sum + val, 0);
         const incorrectCount = answers.length - correctCount;
 
+        let logit;
         if (correctCount === 0) {
-          return -Infinity; // Very low ability
+          logit = -Infinity; // Very low ability
         } else if (incorrectCount === 0) {
-          return Infinity; // Very high ability
+          logit = Infinity; // Very high ability
         } else {
-          return Math.log(correctCount / incorrectCount);
+          logit = Math.log(correctCount / incorrectCount);
         }
+
+        // Convert logit to percentage
+        return logit === Infinity
+          ? 100
+          : logit === -Infinity
+          ? 0
+          : ((1 / (1 + Math.exp(-logit))) * 100).toFixed(2);
       });
 
       // Compute difficulty logits
@@ -50,13 +57,21 @@ const handleXLS = async (bot, chatId, fileId, fileName) => {
         );
         const incorrectCount = matrix.length - correctCount;
 
+        let logit;
         if (correctCount === 0) {
-          return Infinity; // Extremely hard question
+          logit = Infinity; // Extremely hard question
         } else if (incorrectCount === 0) {
-          return -Infinity; // Extremely easy question
+          logit = -Infinity; // Extremely easy question
         } else {
-          return Math.log(correctCount / incorrectCount);
+          logit = Math.log(correctCount / incorrectCount);
         }
+
+        // Convert logit to percentage
+        return logit === Infinity
+          ? 100
+          : logit === -Infinity
+          ? 0
+          : ((1 / (1 + Math.exp(-logit))) * 100).toFixed(2);
       });
 
       console.log("Ability Logits:", abilityLogits);
