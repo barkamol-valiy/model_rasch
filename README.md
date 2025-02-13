@@ -44,9 +44,9 @@ Before you start, ensure you have the following installed:
 
 - Start the bot in Telegram by sending `/start`.
 - Send the xls, xlsx or csv file which contains a matrix of student and question. 0 means incorrect, 1 means correct answer
-  ![dummy-data](image-2.png)
+  ![dummy-data](./images/dummy_data.png)
 - You'll get result.xls as a response
-  ![result](image-3.png)
+  ![result](./images/result.png)
 
 ## Troubleshooting
 
