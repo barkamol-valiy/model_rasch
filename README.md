@@ -43,7 +43,7 @@ Before you start, ensure you have the following installed:
 ## Usage
 
 - Start the bot in Telegram by sending `/start`.
-- Send the xls, xlsx or csv file which contains a matrix of student and question. 0 means incorrect, 1 means correct answer
+- Send the xls, xlsx or csv file which contains a matrix of student-question-answer relation. 0 means incorrect, 1 means correct answer
   ![dummy-data](./images/dummy_data.png)
 - You'll get result.xls as a response
   ![result](./images/result.png)
